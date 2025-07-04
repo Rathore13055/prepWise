@@ -12,7 +12,7 @@ export default function SelectRolePage() {
 
   const handleStart = () => {
     if (finalRole) {
-      sessionStorage.setItem('selectedRole', finalRole);
+      localStorage.setItem('selectedRole', finalRole); // ✅ Save the final readable role
       router.push('/interview');
     }
   };
@@ -31,11 +31,11 @@ export default function SelectRolePage() {
         className="text-black px-4 py-2 mb-4 rounded w-80"
       >
         <option value="">-- Choose a role --</option>
-        <option value="software-engineer">Software Engineer</option>
-        <option value="product-manager">Product Manager</option>
-        <option value="data-analyst">Data Analyst</option>
-        <option value="ux-designer">UX Designer</option>
-        <option value="marketing-specialist">Marketing Specialist</option>
+        <option value="Software Engineer">Software Engineer</option>
+        <option value="Product Manager">Product Manager</option>
+        <option value="Data Analyst">Data Analyst</option>
+        <option value="UX Designer">UX Designer</option>
+        <option value="Marketing Specialist">Marketing Specialist</option>
         <option value="other">Other (Type Manually)</option>
       </select>
 

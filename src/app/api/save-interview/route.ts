@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import clientPromise from '@/lib/mongodb';
+import type { Document } from 'mongodb'; // ✅ Added
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -16,11 +17,26 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { role, questions, answers, scores, readiness } = body;
 
+    if (
+      !role ||
+      !Array.isArray(questions) ||
+      !Array.isArray(answers) ||
+      !Array.isArray(scores) ||
+      readiness === undefined
+    ) {
+      return NextResponse.json(
+        { error: 'Missing or invalid interview data.' },
+        { status: 400 }
+      );
+    }
+
     const client = await clientPromise;
     const db = client.db('interview_platform');
-    const users = db.collection('users');
 
-    // 1. Ensure user document exists
+    // ✅ Type-safe collection
+    const users = db.collection<Document>('users');
+
+    // ✅ Ensure user document exists
     await users.updateOne(
       { email: session.user.email },
       {
@@ -34,12 +50,14 @@ export async function POST(req: NextRequest) {
       { upsert: true }
     );
 
-    // 2. Push interview entry (cast to `any` to avoid TS conflict)
+    // ✅ Push interview safely
     await users.updateOne(
-      { email: session.user.email },
-      {
-        $push: {
-          pastInterviews: {
+  { email: session.user.email },
+  {
+    $push: {
+      pastInterviews: {
+        $each: [
+          {
             role,
             questions,
             answers,
@@ -47,9 +65,13 @@ export async function POST(req: NextRequest) {
             readiness,
             date: new Date(),
           },
-        } as any,
-      }
-    );
+        ],
+      },
+    } as any, // ✅ Tell TypeScript to ignore type checking here
+  }
+);
+
+
 
     return NextResponse.json({ success: true });
   } catch (error) {

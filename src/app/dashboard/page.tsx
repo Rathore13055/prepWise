@@ -1,10 +1,18 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 
 type Interview = {
   role: string;
-  date: string;
+  questions: string[];
+  answers: string[];
+  scores: number[];
   readiness: number;
+  date: string;
 };
+
+// your functional component code...
+
 
 type UserData = {
   name: string;

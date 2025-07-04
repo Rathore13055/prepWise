@@ -80,17 +80,26 @@ export default function InterviewPage() {
       setFeedbackComplete(true);
 
       // Save interview to MongoDB
-      fetch('/api/save-interview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: selectedRole,
-          questions,
-          answers: updatedAnswers.map((a) => a.answer),
-          scores: updatedAnswers.map(({ clarity, relevance, confidence }) => ({ clarity, relevance, confidence })),
-          readiness: score,
-        }),
-      });
+      if (selectedRole) {
+  fetch('/api/save-interview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      role: selectedRole,
+      questions,
+      answers: updatedAnswers.map((a) => a.answer),
+      scores: updatedAnswers.map(({ clarity, relevance, confidence }) => ({
+        clarity,
+        relevance,
+        confidence,
+      })),
+      readiness: score,
+    }),
+  });
+} else {
+  console.warn('⚠️ selectedRole is not available when saving interview');
+}
+
     }
   };
 
