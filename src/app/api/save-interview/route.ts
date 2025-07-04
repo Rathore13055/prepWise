@@ -1,24 +1,9 @@
-// File: src/app/api/save-interview/route.ts
+// src/app/api/save-interview/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { MongoClient } from 'mongodb';
-
-// Ensure we reuse the client for hot reloads in dev
-let client: MongoClient;
-const uri = process.env.MONGODB_URI!;
-const options = {};
-
-declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
-if (!global._mongoClientPromise) {
-  client = new MongoClient(uri, options);
-  global._mongoClientPromise = client.connect();
-}
-const clientPromise = global._mongoClientPromise;
+import clientPromise from '@/lib/mongodb';
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -35,29 +20,36 @@ export async function POST(req: NextRequest) {
     const db = client.db('interview_platform');
     const users = db.collection('users');
 
+    // 1. Ensure user document exists
     await users.updateOne(
-    { email: session.user.email },
-    {
+      { email: session.user.email },
+      {
         $setOnInsert: {
-        email: session.user.email,
-        name: session.user.name || '',
-        education: '',
-        pastInterviews: [],
+          email: session.user.email,
+          name: session.user.name || '',
+          education: '',
+          pastInterviews: [],
         },
+      },
+      { upsert: true }
+    );
+
+    // 2. Push interview entry (cast to `any` to avoid TS conflict)
+    await users.updateOne(
+      { email: session.user.email },
+      {
         $push: {
-        pastInterviews: {
+          pastInterviews: {
             role,
             questions,
             answers,
             scores,
             readiness,
             date: new Date(),
-        },
-        } as any, // 👈 Fix type error here
-    },
-    { upsert: true }
+          },
+        } as any,
+      }
     );
-
 
     return NextResponse.json({ success: true });
   } catch (error) {

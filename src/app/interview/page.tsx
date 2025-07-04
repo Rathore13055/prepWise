@@ -6,7 +6,6 @@ import AudioRecorder from '@/components/AudioRecorder';
 import { getRandomFeedback } from '@/utils/feedbackUtils';
 import CameraFeed from '@/components/CameraFeed';
 import CameraPermissionHandler from '@/components/CameraPermissionHandler';
-
 import {
   BarChart,
   Bar,
@@ -53,7 +52,7 @@ export default function InterviewPage() {
       setLoading(false);
     };
 
-    fetchQuestions();
+    if (selectedRole) fetchQuestions();
   }, [selectedRole]);
 
   const handleTranscript = (text: string) => {
@@ -91,10 +90,6 @@ export default function InterviewPage() {
           scores: updatedAnswers.map(({ clarity, relevance, confidence }) => ({ clarity, relevance, confidence })),
           readiness: score,
         }),
-      }).then(() => {
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 3000);
       });
     }
   };
@@ -122,7 +117,6 @@ export default function InterviewPage() {
 
   if (feedbackComplete) {
     const avg = getAverages();
-
     const chartData = [
       { name: 'Clarity', value: avg.clarity },
       { name: 'Relevance', value: avg.relevance },
@@ -164,6 +158,14 @@ export default function InterviewPage() {
             ✅ You’re {readinessScore}% ready for interviews!
           </p>
         )}
+
+        <button
+  onClick={() => router.push('/dashboard')}
+  className="mt-4 bg-green-600 px-4 py-2 rounded"
+>
+  🏠 Go to Dashboard
+</button>
+
       </main>
     );
   }

@@ -17,6 +17,10 @@ export default function SelectRolePage() {
     }
   };
 
+  const goToDashboard = () => {
+    router.push('/dashboard');
+  };
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6">
       <h1 className="text-2xl font-bold mb-6">🧑‍💼 Select or Enter Your Job Role</h1>
@@ -48,9 +52,16 @@ export default function SelectRolePage() {
       <button
         onClick={handleStart}
         disabled={!finalRole}
-        className="bg-green-600 px-4 py-2 rounded disabled:opacity-50"
+        className="bg-green-600 px-4 py-2 rounded disabled:opacity-50 mb-3"
       >
-        Start Interview
+        🎙️ Start Interview
+      </button>
+
+      <button
+        onClick={goToDashboard}
+        className="bg-blue-600 px-4 py-2 rounded"
+      >
+        📊 Go to Dashboard
       </button>
     </main>
   );

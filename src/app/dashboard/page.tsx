@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 
 type Interview = {
@@ -17,10 +15,12 @@ type UserData = {
 
 export default function DashboardPage() {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [sortOption, setSortOption] = useState<'date' | 'readiness'>('date');
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState('');
   const [education, setEducation] = useState('');
+  const [filterRole, setFilterRole] = useState<string>('All');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +64,22 @@ export default function DashboardPage() {
     );
   }
 
+  // Extract unique roles
+  const uniqueRoles = Array.from(new Set(userData.pastInterviews.map(i => i.role)));
+
+  // Filtered Interviews
+let filteredInterviews =
+  filterRole === 'All'
+    ? userData.pastInterviews
+    : userData.pastInterviews.filter((i) => i.role === filterRole);
+
+if (sortOption === 'date') {
+  filteredInterviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+} else if (sortOption === 'readiness') {
+  filteredInterviews.sort((a, b) => b.readiness - a.readiness);
+}
+
+
   return (
     <main className="min-h-screen p-8 bg-black text-white">
       <div className="flex justify-between items-center mb-6">
@@ -103,14 +119,12 @@ export default function DashboardPage() {
             >
               💾 Save
             </button>
-            {!(!userData.name || !userData.education) && (
-              <button
-                onClick={() => setEditMode(false)}
-                className="bg-gray-600 px-4 py-2 rounded"
-              >
-                ❌ Cancel
-              </button>
-            )}
+            <button
+              onClick={() => setEditMode(false)}
+              className="bg-gray-600 px-4 py-2 rounded"
+            >
+              ❌ Cancel
+            </button>
           </div>
         </div>
       ) : (
@@ -126,11 +140,41 @@ export default function DashboardPage() {
       )}
 
       <h2 className="text-2xl font-semibold mb-4">📝 Past Interviews</h2>
-      {userData.pastInterviews.length === 0 ? (
-        <p>No interviews found.</p>
+
+      {/* Role Filter */}
+      <div className="mb-4">
+        <label className="block mb-2">🔍 Filter by Role:</label>
+        <select
+          className="text-black px-4 py-2 rounded w-full"
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+        >
+          <option value="All">All</option>
+          {uniqueRoles.map((role, idx) => (
+            <option key={idx} value={role}>
+              {role}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-4">
+  <label className="block mb-2">📊 Sort by:</label>
+  <select
+    className="text-black px-4 py-2 rounded w-full"
+    value={sortOption}
+    onChange={(e) => setSortOption(e.target.value as 'date' | 'readiness')}
+  >
+    <option value="date">📅 Most Recent</option>
+    <option value="readiness">🔥 Highest Readiness</option>
+  </select>
+</div>
+
+
+      {filteredInterviews.length === 0 ? (
+        <p>No interviews found for this role.</p>
       ) : (
         <ul className="space-y-4">
-          {userData.pastInterviews.map((item, idx) => (
+          {filteredInterviews.map((item, idx) => (
             <li key={idx} className="border p-4 rounded bg-gray-800">
               <p><strong>Role:</strong> {item.role}</p>
               <p><strong>Date:</strong> {new Date(item.date).toLocaleString()}</p>

@@ -1,11 +1,9 @@
+// src/app/api/get-user-data/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { MongoClient } from 'mongodb';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-
-const client = new MongoClient(process.env.MONGODB_URI!);
-const db = client.db('interview_platform');
-const users = db.collection('users');
+import clientPromise from '@/lib/mongodb';
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -15,11 +13,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await client.connect();
+    const client = await clientPromise;
+    const db = client.db('interview_platform');
+    const users = db.collection('users');
 
     let user = await users.findOne({ email: session.user.email });
 
-    // If user doesn't exist, create and then fetch with _id
+    // If user doesn't exist, create one with default fields
     if (!user) {
       await users.insertOne({
         email: session.user.email,
