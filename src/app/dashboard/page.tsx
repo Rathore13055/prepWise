@@ -116,13 +116,13 @@ export default function DashboardPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="text-black p-2 rounded mb-2 w-full"
+              className="text-white bg-gray-800 p-2 rounded mb-2 w-full"
             />
             <label className="block mb-1">🎓 Education:</label>
             <input
               value={education}
               onChange={(e) => setEducation(e.target.value)}
-              className="text-black p-2 rounded w-full"
+              className="text-white bg-gray-800 p-2 rounded w-full"
             />
             <div className="mt-4">
               <button
