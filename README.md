@@ -6,13 +6,13 @@ SmartInterview is a full-stack web platform that helps users prepare for intervi
 
 
 ## 🔑 Key Features of SmartInterview
-- Role-Based Mock Interviews- Choose from 10+ professional roles including SDE, Product Manager, Data Analyst, and more.
+- Role-Based Mock Interviews - Choose from 10+ professional roles including SDE, Product Manager, Data Analyst, and more.
 
 - Voice & Camera I/O Support - Practice interviews using real-time voice and video input/output to simulate real-life interview scenarios.
 
-- Unique Sessions Every Time- Each interview is dynamically generated — no two sessions are ever the same.
+- Unique Sessions Every Time - Each interview is dynamically generated — no two sessions are ever the same.
 
-- Interactive & Minimalist Dashboard- Track your past performances, monitor ongoing progress, and identify strengths and weaknesses via a clean, distraction-free UI.
+- Interactive & Minimalist Dashboard - Track your past performances, monitor ongoing progress, and identify strengths and weaknesses via a clean, distraction-free UI.
 
 - Personalized Feedback & Insights - Get instant summaries, performance breakdowns, and improvement tips after every session.
 
