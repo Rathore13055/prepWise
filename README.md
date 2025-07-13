@@ -31,10 +31,15 @@ PrepWise is a full-stack web platform that helps users prepare for interviews th
 
 ### ♻️ Backend
 
-- Next.js API Routes
-- MongoDB (Atlas)
-- NextAuth.js
-- OpenAI GPT API (Optional)
+-Node.js + Express
+
+-MongoDB + Mongoose
+
+-JWT Auth
+
+-Cloudinary SDK
+
+-Multer
 
 
 ## 🧪 Environment Variables
