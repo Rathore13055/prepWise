@@ -1,12 +1,12 @@
 
 # 🧠 AI Mock Interview Feedback Platform
 
-PrepWise is a full-stack web platform that helps users prepare for interviews through tailored mock interview sessions based on their selected roles. It features an interactive dashboard that lets users track current progress, review past performances, and continuously improve with personalized feedback and insights.
+PrepWise is a full-stack web platform that helps users prepare for interviews through tailored mock interview sessions based on their selected roles. It features an interactive dashboard that lets users track current progress, review past performances, and continuously improve with personalized feedback and insights .
 
 
 
 ## 🔑 Key Features of SmartInterview
-- Role-Based Mock Interviews - Choose from 10+ professional roles including SDE, Product Manager, Data Analyst, and more.
+- Role-Based Mock Interviews - Choose from 10+ professional roles including SDE, Product Manager, Data Analyst, and more .
 
 - Voice & Camera I/O Support - Practice interviews using real-time voice and video input/output to simulate real-life interview scenarios.
 
