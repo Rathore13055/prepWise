@@ -1,7 +1,7 @@
 
 # 🧠 AI Mock Interview Feedback Platform
 
-SmartInterview is a full-stack web platform that helps users prepare for interviews through tailored mock interview sessions based on their selected roles. It features an interactive dashboard that lets users track current progress, review past performances, and continuously improve with personalized feedback and insights.
+PrepWise is a full-stack web platform that helps users prepare for interviews through tailored mock interview sessions based on their selected roles. It features an interactive dashboard that lets users track current progress, review past performances, and continuously improve with personalized feedback and insights.
 
 
 
