@@ -23,11 +23,11 @@ PrepWise is a full-stack web platform that helps users prepare for interviews th
 ## 🧩 Tech Stack
 ### ♻️ Frontend
 
-- Next.js (App Router)
-- React
-- TypeScript
-- Tailwind CSS
-- Web Speech API
+- React + React Router DOM
+- Tailwind CSS + Custom Theme
+- Redux Toolkit (auth state)
+- shadcn/ui (components)
+-Cloudinary (for image upload)
 
 ### ♻️ Backend
 
