@@ -80,7 +80,8 @@ export default function DashboardPage() {
     new Set(userData.pastInterviews.map((i) => i.role))
   );
 
-  let filteredInterviews =
+  // ✅ Changed let → const
+  const filteredInterviews =
     filterRole === "All"
       ? userData.pastInterviews
       : userData.pastInterviews.filter((i) => i.role === filterRole);

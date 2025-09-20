@@ -13,18 +13,22 @@ declare global {
   }
 }
 
-type SpeechRecognition = any;
-type SpeechRecognitionEvent = any;
+type SpeechRecognitionInstance = InstanceType<typeof window.SpeechRecognition> | InstanceType<typeof window.webkitSpeechRecognition>;
+interface SpeechRecognitionEventType {
+  resultIndex: number;
+  results: {
+    0: { transcript: string };
+  }[];
+}
 
 export default function AudioRecorder({ onTranscriptReady }: AudioRecorderProps) {
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const transcriptRef = useRef<string>(''); // accumulate transcript
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
         alert('Speech Recognition API not supported in this browser');
@@ -34,21 +38,21 @@ export default function AudioRecorder({ onTranscriptReady }: AudioRecorderProps)
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
       recognition.interimResults = false;
-      recognition.continuous = true; // ✅ prevent auto-stop on pause
+      recognition.continuous = true; // prevent auto-stop on pause
 
       recognition.onstart = () => {
         console.log('🎙️ Recording started...');
         transcriptRef.current = '';
       };
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
+      recognition.onresult = (event: SpeechRecognitionEventType) => {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           transcriptRef.current += event.results[i][0].transcript + ' ';
         }
         console.log('📝 Partial Transcript:', transcriptRef.current.trim());
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: { error: string }) => {
         console.error('❌ Speech recognition error:', event.error);
         setIsListening(false);
       };
@@ -66,14 +70,14 @@ export default function AudioRecorder({ onTranscriptReady }: AudioRecorderProps)
   const handleStart = () => {
     if (recognitionRef.current && !isListening) {
       setIsListening(true);
-      transcriptRef.current = ''; // reset transcript
+      transcriptRef.current = '';
       recognitionRef.current.start();
     }
   };
 
   const handleStop = () => {
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop(); // will trigger `onend`
+      recognitionRef.current.stop();
     }
   };
 

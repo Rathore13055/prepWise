@@ -19,9 +19,9 @@ export default function CameraPermissionHandler() {
             setPermissionGranted(true);
           }
         };
-      } catch (err) {
-        // Fallback if navigator.permissions is not supported
-        console.warn('⚠️ Permissions API not supported. Relying on getUserMedia fallback.');
+      } catch (err: unknown) {
+        // ✅ Log the error to avoid unused variable warning
+        console.warn('⚠️ Permissions API not supported or error occurred:', err);
       }
     };
 
@@ -35,7 +35,8 @@ export default function CameraPermissionHandler() {
           const stream = await navigator.mediaDevices.getUserMedia({ video: true });
           stream.getTracks().forEach(track => track.stop()); // Stop the stream immediately
           setPermissionGranted(true);
-        } catch (err) {
+        } catch (err: unknown) {
+          console.warn('⚠️ Error requesting camera access:', err);
           alert('⚠️ Please allow camera access to continue.');
         }
       }

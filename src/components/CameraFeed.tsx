@@ -8,35 +8,43 @@ export default function CameraFeed() {
   const [multipleFacesDetected, setMultipleFacesDetected] = useState(false);
 
   useEffect(() => {
-    const loadModels = async () => {
-      const MODEL_URL = '/models';
-      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-    };
+    // ✅ Ensure this runs only in the browser
+    if (typeof window === 'undefined') return;
 
-    const startVideo = async () => {
+    const loadModelsAndStartVideo = async () => {
       try {
+        const MODEL_URL = '/models'; // Make sure these models are in the public folder
+        await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+
+        // Start video stream
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error('Camera access error:', error);
+        console.error('Error loading models or accessing camera:', error);
       }
     };
 
-    loadModels().then(startVideo);
+    loadModelsAndStartVideo();
   }, []);
 
   useEffect(() => {
+    if (!videoRef.current) return;
+
     const detectFaces = async () => {
       if (!videoRef.current) return;
 
-      const detections = await faceapi.detectAllFaces(
-        videoRef.current,
-        new faceapi.TinyFaceDetectorOptions()
-      );
+      try {
+        const detections = await faceapi.detectAllFaces(
+          videoRef.current,
+          new faceapi.TinyFaceDetectorOptions()
+        );
 
-      setMultipleFacesDetected(detections.length > 1);
+        setMultipleFacesDetected(detections.length > 1);
+      } catch (error) {
+        console.warn('Face detection error:', error);
+      }
     };
 
     const interval = setInterval(detectFaces, 1000); // check every second

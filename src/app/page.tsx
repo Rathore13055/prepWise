@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -12,7 +12,7 @@ export default function Home() {
     if (session) {
       router.push('/select-role'); // ✅ redirect after login
     }
-  }, [session]);
+  }, [session, router]); // ✅ added router to dependency array
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6">

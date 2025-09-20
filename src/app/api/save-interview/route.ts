@@ -4,7 +4,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import clientPromise from '@/lib/mongodb';
-import type { Document } from 'mongodb'; // ✅ Added
+
+// ✅ Define interview type
+interface Interview {
+  role: string;
+  questions: string[];
+  answers: string[];
+  scores: number[];
+  readiness: number;
+  date: Date;
+}
+
+// ✅ Define user type
+interface User {
+  email: string;
+  name: string;
+  education: string;
+  pastInterviews: Interview[];
+}
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -34,7 +51,7 @@ export async function POST(req: NextRequest) {
     const db = client.db('interview_platform');
 
     // ✅ Type-safe collection
-    const users = db.collection<Document>('users');
+    const users = db.collection<User>('users');
 
     // ✅ Ensure user document exists
     await users.updateOne(
@@ -50,28 +67,24 @@ export async function POST(req: NextRequest) {
       { upsert: true }
     );
 
-    // ✅ Push interview safely
+    // ✅ Push new interview safely
+    const newInterview: Interview = {
+      role,
+      questions,
+      answers,
+      scores,
+      readiness,
+      date: new Date(),
+    };
+
     await users.updateOne(
-  { email: session.user.email },
-  {
-    $push: {
-      pastInterviews: {
-        $each: [
-          {
-            role,
-            questions,
-            answers,
-            scores,
-            readiness,
-            date: new Date(),
-          },
-        ],
-      },
-    } as any, // ✅ Tell TypeScript to ignore type checking here
-  }
-);
-
-
+      { email: session.user.email },
+      {
+        $push: {
+          pastInterviews: newInterview,
+        },
+      }
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
